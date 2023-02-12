@@ -5,24 +5,24 @@ import 'simplelightbox/dist/simple-lightbox.min.css';
 import { getImages } from './js/api';
 import { renderListElements } from './js/render';
 
-const formEl = document.querySelector('.search-form');
-const galleryEl = document.querySelector('.gallery');
-const loadMoreBtnEl = document.querySelector('.load-more');
+const formSearch = document.querySelector('.search-form');
+const gallery = document.querySelector('.gallery');
+const loadMoreBtn = document.querySelector('.load-more');
 
 let page = 1;
 let query = '';
 let totalPages = 0;
 
-loadMoreBtnEl.addEventListener('click', onLoadMoreBtnClick);
-formEl.addEventListener('submit', onFormSubmit);
+loadMoreBtn.addEventListener('click', onLoadMoreBtnClick);
+formSearch.addEventListener('submit', onFormSubmit);
 
 async function onFormSubmit(event) {
   event.preventDefault();
   query = event.currentTarget.elements.searchQuery.value.trim();
   page = 1;
-  galleryEl.innerHTML = '';
+  gallery.innerHTML = '';
 
-  loadMoreBtnEl.classList.add('is-hidden');
+  loadMoreBtn.classList.add('is-hidden');
 
   try {
     const images = await getImages(query);
@@ -34,12 +34,12 @@ async function onFormSubmit(event) {
     }
 
     Notify.success(`Hooray! We found ${images.totalHits} images.`);
-    renderListElements(images.hits, galleryEl);
+    renderListElements(images.hits, gallery);
     new SimpleLightbox('.gallery a').refresh();
 
     totalPages = Math.ceil(images.totalHits / 40);
     if (totalPages > 1) {
-      loadMoreBtnEl.classList.remove('is-hidden');
+      loadMoreBtn.classList.remove('is-hidden');
     }
   } catch (error) {
     console.log(error);
@@ -58,7 +58,7 @@ async function onLoadMoreBtnClick() {
 
   try {
     const images = await getImages(query, page);
-    renderListElements(images.hits, galleryEl);
+    renderListElements(images.hits, gallery);
     new SimpleLightbox('.gallery a').refresh();
     scrollPage();
   } catch (error) {
